@@ -1,15 +1,15 @@
-import { ReactElement } from "react";
+import { ReactElement } from 'react'
 
 function Home(): ReactElement {
   return (
-    <main className="w-full h-screen p-10">
-      <h1 className="text-3xl pb-5 lg:text-[45px] font-bold text-gray text-center">
+    <main className="h-screen w-full p-10">
+      <h1 className="pb-5 text-center text-3xl font-bold text-gray lg:text-[45px]">
         CloneGPT
       </h1>
 
       {/* DESENVOLVA SEU CODIGO AQUI */}
     </main>
-  );
+  )
 }
 
-export default Home;
+export default Home
