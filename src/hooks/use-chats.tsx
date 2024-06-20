@@ -129,14 +129,15 @@ function chatReducer(state: State, action: Action): State {
   }
 }
 function generateInitialState(): State {
-  const chatsFromLocalStorage = JSON.parse(
-    localStorage.getItem('chats') || '{}',
-  )
+  const chatsFromLocalStorage =
+    typeof global.window !== 'undefined' &&
+    global.window?.localStorage?.getItem('chats')
+
   const id = uuid()
   return {
     chats: {
       [id]: { title: 'Nova conversa', messages: [] },
-      ...chatsFromLocalStorage,
+      ...JSON.parse(chatsFromLocalStorage || '{}'),
     },
     isLoading: false,
     selectedChat: id,
@@ -208,7 +209,7 @@ export function useChat(openAIKey: string) {
     chatsToIgnore.forEach((chatIndex) => {
       delete chatsToSave[chatIndex]
     })
-    localStorage.setItem('chats', JSON.stringify(chatsToSave))
+    window?.localStorage?.setItem('chats', JSON.stringify(chatsToSave))
   }, [state.chats])
 
   return {
