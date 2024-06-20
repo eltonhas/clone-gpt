@@ -1,4 +1,6 @@
 /* eslint-disable no-case-declarations */
+'use  client'
+
 import { useEffect, useReducer } from 'react'
 import { v4 as uuid } from 'uuid'
 
