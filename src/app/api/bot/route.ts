@@ -1,13 +1,41 @@
-import { NextResponse } from "next/server";
-import { HttpStatusCode } from "axios";
+import { HttpStatusCode } from 'axios'
+import { NextResponse } from 'next/server'
 
-export async function GET(): Promise<NextResponse> {
+import openai from '@/utils/openai'
+
+export async function POST(req: Request): Promise<NextResponse> {
+  const { key, chat } = await req.json()
+
+  const { messages } = chat
+
+  const chatCompletion = await openai(key).chat.completions.create({
+    messages,
+    model: 'gpt-3.5-turbo',
+  })
+
+  const message = chatCompletion.choices[0].message
+
+  let newTitle = chat.title
+
+  if (chat.title === 'Nova conversa') {
+    const chatCompletionTitle = await openai(key).chat.completions.create({
+      messages: [
+        ...messages,
+        message,
+        {
+          role: 'user',
+          content:
+            'Retone um título de até 25 caracteres para o chat acima. Retorne apenas o título e nada mais.',
+        },
+      ],
+      model: 'gpt-3.5-turbo',
+    })
+
+    newTitle = chatCompletionTitle.choices[0].message.content
+  }
+
   return NextResponse.json(
-    { message: "Hello World!" },
-    { status: HttpStatusCode.Ok }
-  );
-}
-
-export async function POST(): Promise<void> {
-  /* FAÇA SUA REQUISIÇÃO PARA OPENAI A PARTIR DESSA ROTA */
+    { ...chat, title: newTitle, messages: messages.concat(message) },
+    { status: HttpStatusCode.Ok },
+  )
 }
